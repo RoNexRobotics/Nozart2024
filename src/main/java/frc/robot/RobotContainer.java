@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.AlignToTagCmd;
 import frc.robot.commands.DriveTeleopCmd;
 import frc.robot.subsystems.SwerveSubsystem;
 
@@ -29,6 +30,7 @@ public class RobotContainer {
 
   // Commands
   DriveTeleopCmd m_driveTeleopCmd = new DriveTeleopCmd(m_swerveSubsystem, m_driverController);
+  AlignToTagCmd m_alignToTagCmd = new AlignToTagCmd(m_swerveSubsystem);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -51,6 +53,8 @@ public class RobotContainer {
     m_driverController.rightBumper().onTrue(new InstantCommand(m_swerveSubsystem::resetHeading, m_swerveSubsystem));
 
     m_driverController.y().onTrue(new InstantCommand(m_swerveSubsystem::resetPose, m_swerveSubsystem));
+
+    m_driverController.leftBumper().whileTrue(m_alignToTagCmd);
   }
 
   /**
@@ -59,12 +63,12 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return new PathPlannerAuto("Auto1");
+    // return new PathPlannerAuto("Auto1");
     // Load the path you want to follow using its name in the GUI
     // PathPlannerPath path = PathPlannerPath.fromPathFile("Path1");
 
     // // Create a path following command using AutoBuilder. This will also trigger event markers.
     // return AutoBuilder.followPathWithEvents(path);
-    // return null;
+    return null;
   }
 }

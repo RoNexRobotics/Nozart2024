@@ -49,8 +49,6 @@ public class SwerveSubsystem extends SubsystemBase {
     }
   );
 
-  private ChassisSpeeds m_chassisSpeeds = new ChassisSpeeds();
-
   private Field2d m_field = new Field2d();
   
   /** Creates a new SwerveSubsystem. */
@@ -137,7 +135,7 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   private ChassisSpeeds getRobotRelativeSpeeds() {
-    return m_chassisSpeeds;
+    return DriveConstants.kDriveKinematics.toChassisSpeeds(m_frontLeftModule.getModuleState(), m_frontRightModule.getModuleState(), m_rearLeftModule.getModuleState(), m_rearRightModule.getModuleState());
   }
 
   private void drive(ChassisSpeeds chassisSpeeds) {
@@ -151,7 +149,6 @@ public class SwerveSubsystem extends SubsystemBase {
   public void drive(double xSpeed, double ySpeed, double rotSpeed, boolean fieldRelative) {
     // Convert controller inputs to chassis speeds
     ChassisSpeeds speeds = new ChassisSpeeds(xSpeed, ySpeed, rotSpeed);
-    m_chassisSpeeds = speeds;
 
     if (fieldRelative) {
       // If field-relative mode, convert to field-relative chassis speeds
