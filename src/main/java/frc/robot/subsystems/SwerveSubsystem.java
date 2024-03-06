@@ -15,12 +15,14 @@ import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.LimelightHelpers;
 import frc.robot.Constants.AutoConstants;
+import frc.robot.LimelightHelpers;
 import swervelib.SwerveDrive;
 import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
@@ -42,7 +44,7 @@ public class SwerveSubsystem extends SubsystemBase {
 			throw new RuntimeException(e);
 		}
 
-		m_swerve.setHeadingCorrection(false); // Heading correction should only be used while controlling the robot via angle.
+		m_swerve.setHeadingCorrection(true); // Heading correction should only be used while controlling the robot via angle.
     m_swerve.setCosineCompensator(!SwerveDriveTelemetry.isSimulation); // Disables cosine compensation for simulations since it causes discrepancies not seen in real life.
 
 		setupPathPlanner();
@@ -51,21 +53,22 @@ public class SwerveSubsystem extends SubsystemBase {
 	@Override
 	public void periodic() {
 		// This method will be called once per scheduler run
-		// Pose2d whereTheRobotThinksItIsBasedOnTheCamera = LimelightHelpers.getBotPose2d_wpiBlue("");
-		// if (whereTheRobotThinksItIsBasedOnTheCamera.getX() != 0) {
-		// 	m_swerve.addVisionMeasurement(whereTheRobotThinksItIsBasedOnTheCamera, Timer.getFPGATimestamp(), VecBuilder.fill(2, 2, Units.degreesToRadians(60)));
-		// }
+		Pose2d whereTheRobotThinksItIsBasedOnTheCamera = LimelightHelpers.getBotPose2d_wpiBlue("");
+		if (whereTheRobotThinksItIsBasedOnTheCamera.getX() != 0) {
+			m_swerve.addVisionMeasurement(whereTheRobotThinksItIsBasedOnTheCamera, Timer.getFPGATimestamp(), VecBuilder.fill(0.7, 0.7, 0.7));
+		}
 
 		// The variable is called "whereTheRobotThinksItIsBasedOnTheCamera" because a non-programmer named the variable.
 
-		LimelightHelpers.PoseEstimate whereTheRobotThinksItIsBasedOnTheCamera = LimelightHelpers.getBotPoseEstimate_wpiBlue("");
-		if (whereTheRobotThinksItIsBasedOnTheCamera.tagCount >= 2) {
-			m_swerve.addVisionMeasurement(
-				whereTheRobotThinksItIsBasedOnTheCamera.pose,
-				whereTheRobotThinksItIsBasedOnTheCamera.timestampSeconds,
-				VecBuilder.fill(0.7, 0.7, 9999999)
-			);
-		}
+		// LimelightHelpers.PoseEstimate whereTheRobotThinksItIsBasedOnTheCamera = LimelightHelpers.getBotPoseEstimate_wpiBlue("");
+		// System.out.println(whereTheRobotThinksItIsBasedOnTheCamera.tagCount);
+		// if (whereTheRobotThinksItIsBasedOnTheCamera.tagCount >= 2) {
+		// 	m_swerve.addVisionMeasurement(
+		// 		whereTheRobotThinksItIsBasedOnTheCamera.pose,
+		// 		whereTheRobotThinksItIsBasedOnTheCamera.timestampSeconds,
+		// 		VecBuilder.fill(0.7, 0.7, 9999999)
+		// 	);
+		// }
 	}
 
 	private void setupPathPlanner() {
@@ -117,13 +120,22 @@ public class SwerveSubsystem extends SubsystemBase {
 
 	public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier headingX) {
 		return run(() -> {
-			m_swerve.drive(m_swerve.swerveController.getTargetSpeeds(
-				Math.pow(translationX.getAsDouble(), 3),
-				Math.pow(translationY.getAsDouble(), 3),
-				headingX.getAsDouble(),
-				m_swerve.getOdometryHeading().getRadians(),
-				m_maxSpeed
-			));
+			// m_swerve.drive(m_swerve.swerveController.getTargetSpeeds(
+			// 	// Math.pow(translationX.getAsDouble(), 3),
+			// 	// Math.pow(translationY.getAsDouble(), 3),
+			// 	translationX.getAsDouble(),
+			// 	translationY.getAsDouble(),
+			// 	headingX.getAsDouble(),
+			// 	m_swerve.getOdometryHeading().getRadians(),
+			// 	m_maxSpeed
+			// ));
+			m_swerve.drive(
+				new ChassisSpeeds(
+					translationX.getAsDouble(),
+					translationY.getAsDouble(),
+					headingX.getAsDouble()
+				)
+			);
 		});
 	}
 }

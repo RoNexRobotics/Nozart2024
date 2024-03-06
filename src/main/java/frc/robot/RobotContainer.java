@@ -7,7 +7,6 @@ package frc.robot;
 import java.io.File;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -17,11 +16,13 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.OIConstants;
+import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
 public class RobotContainer {
   // Subsystems
   private SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
+  private ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
 
   // Controllers
   private CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
@@ -34,7 +35,7 @@ public class RobotContainer {
     m_swerveSubsystem.setDefaultCommand(m_swerveSubsystem.driveCommand(
       () -> -m_driverController.getLeftY(),
       () -> -m_driverController.getLeftX(),
-      () -> m_driverController.getRightX()
+      () -> -m_driverController.getRightX()
     ));
 
     registerNamedCommands();
@@ -48,9 +49,7 @@ public class RobotContainer {
 
     // List of autos
     m_autoChooser.addOption("None", Commands.none());
-    m_autoChooser.addOption("Path 1", AutoBuilder.followPath(PathPlannerPath.fromPathFile("Path 1")));
     m_autoChooser.addOption("Auto 1", AutoBuilder.buildAuto("Auto 1"));
-    m_autoChooser.addOption("Auto 2", AutoBuilder.buildAuto("Auto 2"));
 
     SmartDashboard.putData("Auto Chooser", m_autoChooser);
   }
@@ -59,6 +58,12 @@ public class RobotContainer {
     m_driverController.y().onTrue(new InstantCommand(m_swerveSubsystem::zeroGyro, m_swerveSubsystem));
 
     m_driverController.b().onTrue(new InstantCommand(m_swerveSubsystem::resetOdometry, m_swerveSubsystem));
+
+    m_driverController.a().onTrue(new InstantCommand(() -> m_shooterSubsystem.set(1), m_shooterSubsystem));
+    m_driverController.a().onFalse(new InstantCommand(() -> m_shooterSubsystem.set(0), m_shooterSubsystem));
+
+    m_driverController.x().onTrue(new InstantCommand(() -> m_shooterSubsystem.set(-1), m_shooterSubsystem));
+    m_driverController.x().onFalse(new InstantCommand(() -> m_shooterSubsystem.set(0), m_shooterSubsystem));
   }
 
   public Command getAutonomousCommand() {
