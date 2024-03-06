@@ -53,12 +53,12 @@ public class SwerveSubsystem extends SubsystemBase {
 	@Override
 	public void periodic() {
 		// This method will be called once per scheduler run
+
+		// The variable is called "whereTheRobotThinksItIsBasedOnTheCamera" because a non-programmer named the variable.
 		Pose2d whereTheRobotThinksItIsBasedOnTheCamera = LimelightHelpers.getBotPose2d_wpiBlue("");
 		if (whereTheRobotThinksItIsBasedOnTheCamera.getX() != 0) {
 			m_swerve.addVisionMeasurement(whereTheRobotThinksItIsBasedOnTheCamera, Timer.getFPGATimestamp(), VecBuilder.fill(0.7, 0.7, 0.7));
 		}
-
-		// The variable is called "whereTheRobotThinksItIsBasedOnTheCamera" because a non-programmer named the variable.
 
 		// LimelightHelpers.PoseEstimate whereTheRobotThinksItIsBasedOnTheCamera = LimelightHelpers.getBotPoseEstimate_wpiBlue("");
 		// System.out.println(whereTheRobotThinksItIsBasedOnTheCamera.tagCount);

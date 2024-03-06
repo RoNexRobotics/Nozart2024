@@ -9,9 +9,10 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPXConfiguration;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ShooterConstants;
 
 public class ShooterSubsystem extends SubsystemBase {
-  private VictorSPX m_motor = new VictorSPX(13);
+  private VictorSPX m_motor = new VictorSPX(ShooterConstants.kShooterMotorId);
 
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
