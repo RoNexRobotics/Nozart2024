@@ -4,10 +4,12 @@ import com.pathplanner.lib.util.PIDConstants;
 
 public final class Constants {
 	public static final class IntakeConstants {
-		public static final int kIntakePivotMotorId = 14;
-		public static final int kIntakeMotorId = 15;
-		public static final int kIntakePivotEncoderChannelA = 0;
-		public static final int kIntakePivotEncoderChannelB = 1;
+		public static final int kPivotMotorId = 14;
+		public static final int kUpperRollerMotorId = 15;
+		public static final int kLowerRollerMotorId = 16;
+		public static final int kPivotEncoderChannelA = 0;
+		public static final int kPivotEncoderChannelB = 1;
+		public static final boolean kPivotEncoderInverted = false;
 	}
 
 	public static final class ShooterConstants {
