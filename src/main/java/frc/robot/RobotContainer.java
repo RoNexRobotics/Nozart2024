@@ -16,12 +16,14 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.OIConstants;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
 public class RobotContainer {
   // Subsystems
   private SwerveSubsystem m_swerveSubsystem = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve"));
+  private IntakeSubsystem m_intakeSubsystem = new IntakeSubsystem();
   private ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
 
   // Controllers
@@ -33,9 +35,9 @@ public class RobotContainer {
 
     // Setup default commands
     m_swerveSubsystem.setDefaultCommand(m_swerveSubsystem.driveCommand(
-      () -> -m_driverController.getLeftY(),
-      () -> -m_driverController.getLeftX(),
-      () -> -m_driverController.getRightX()
+      () -> -m_driverController.getLeftY() * 2,
+      () -> -m_driverController.getLeftX() * 2,
+      () -> -m_driverController.getRightX() * 2
     ));
 
     registerNamedCommands();
@@ -59,11 +61,11 @@ public class RobotContainer {
 
     m_driverController.b().onTrue(new InstantCommand(m_swerveSubsystem::resetOdometry, m_swerveSubsystem));
 
-    m_driverController.a().onTrue(new InstantCommand(() -> m_shooterSubsystem.set(1), m_shooterSubsystem));
-    m_driverController.a().onFalse(new InstantCommand(() -> m_shooterSubsystem.set(0), m_shooterSubsystem));
+    m_driverController.a().onTrue(new InstantCommand(() -> m_intakeSubsystem.setAngleSpeed(0.5), m_intakeSubsystem));
+    m_driverController.a().onFalse(new InstantCommand(() -> m_intakeSubsystem.setAngleSpeed(0), m_intakeSubsystem));
 
-    m_driverController.x().onTrue(new InstantCommand(() -> m_shooterSubsystem.set(-1), m_shooterSubsystem));
-    m_driverController.x().onFalse(new InstantCommand(() -> m_shooterSubsystem.set(0), m_shooterSubsystem));
+    m_driverController.x().onTrue(new InstantCommand(() -> m_intakeSubsystem.setAngleSpeed(-0.5), m_intakeSubsystem));
+    m_driverController.x().onFalse(new InstantCommand(() -> m_intakeSubsystem.setAngleSpeed(0), m_intakeSubsystem));
   }
 
   public Command getAutonomousCommand() {

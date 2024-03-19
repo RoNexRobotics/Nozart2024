@@ -8,6 +8,7 @@ import org.littletonrobotics.junction.Logger;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import com.ctre.phoenix.motorcontrol.can.VictorSPXConfiguration;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
@@ -33,6 +34,10 @@ public class IntakeSubsystem extends SubsystemBase {
     m_lowerRollerMotor = new CANSparkMax(IntakeConstants.kLowerRollerMotorId, MotorType.kBrushed);
 
     m_pivotMotor.configFactoryDefault();
+
+    VictorSPXConfiguration pivotMotorConfig = new VictorSPXConfiguration();
+    // pivotMotorConfig
+
     m_upperRollerMotor.restoreFactoryDefaults();
     m_lowerRollerMotor.restoreFactoryDefaults();
 
@@ -51,6 +56,10 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void setAngleSetpoint(double setpoint) {
     m_pivotMotor.set(ControlMode.PercentOutput, m_pidController.calculate(m_pivotEncoder.get(), setpoint));
+  }
+
+  public void setAngleSpeed(double speed) {
+    m_pivotMotor.set(ControlMode.PercentOutput, speed);
   }
 
   public void setRollerSpeed(double speed) {
