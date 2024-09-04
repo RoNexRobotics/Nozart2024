@@ -8,6 +8,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.function.DoubleSupplier;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
@@ -44,7 +46,7 @@ public class SwerveSubsystem extends SubsystemBase {
 			throw new RuntimeException(e);
 		}
 
-		m_swerve.setHeadingCorrection(true); // Heading correction should only be used while controlling the robot via angle.
+		m_swerve.setHeadingCorrection(false); // Heading correction should only be used while controlling the robot via angle.
     m_swerve.setCosineCompensator(!SwerveDriveTelemetry.isSimulation); // Disables cosine compensation for simulations since it causes discrepancies not seen in real life.
 
 		setupPathPlanner();
@@ -54,11 +56,13 @@ public class SwerveSubsystem extends SubsystemBase {
 	public void periodic() {
 		// This method will be called once per scheduler run
 
+		// Logger.recordOutput("", m_swerve.get);
+
 		// The variable is called "whereTheRobotThinksItIsBasedOnTheCamera" because a non-programmer named the variable.
-		Pose2d whereTheRobotThinksItIsBasedOnTheCamera = LimelightHelpers.getBotPose2d_wpiBlue("");
-		if (whereTheRobotThinksItIsBasedOnTheCamera.getX() != 0) {
-			m_swerve.addVisionMeasurement(whereTheRobotThinksItIsBasedOnTheCamera, Timer.getFPGATimestamp(), VecBuilder.fill(0.7, 0.7, 0.7));
-		}
+		// Pose2d whereTheRobotThinksItIsBasedOnTheCamera = LimelightHelpers.getBotPose2d_wpiBlue("");
+		// if (whereTheRobotThinksItIsBasedOnTheCamera.getX() != 0) {
+		// 	m_swerve.addVisionMeasurement(whereTheRobotThinksItIsBasedOnTheCamera, Timer.getFPGATimestamp(), VecBuilder.fill(0.7, 0.7, 0.7));
+		// }
 
 		// LimelightHelpers.PoseEstimate whereTheRobotThinksItIsBasedOnTheCamera = LimelightHelpers.getBotPoseEstimate_wpiBlue("");
 		// System.out.println(whereTheRobotThinksItIsBasedOnTheCamera.tagCount);
@@ -137,5 +141,15 @@ public class SwerveSubsystem extends SubsystemBase {
 				)
 			);
 		});
+	}
+
+	public void drive(double translationX, double translationY, double headingX) {
+		m_swerve.drive(
+			new ChassisSpeeds(
+				translationX,
+				translationY,
+				headingX
+			)
+		);
 	}
 }

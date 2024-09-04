@@ -31,15 +31,17 @@ public class IntakeSubsystem extends SubsystemBase {
   public IntakeSubsystem() {
     m_pivotMotor = new VictorSPX(IntakeConstants.kPivotMotorId);
     m_upperRollerMotor = new CANSparkMax(IntakeConstants.kUpperRollerMotorId, MotorType.kBrushed);
-    m_lowerRollerMotor = new CANSparkMax(IntakeConstants.kLowerRollerMotorId, MotorType.kBrushed);
+    // m_lowerRollerMotor = new CANSparkMax(IntakeConstants.kLowerRollerMotorId, MotorType.kBrushed);
 
     m_pivotMotor.configFactoryDefault();
+    m_upperRollerMotor.restoreFactoryDefaults();
+    // m_lowerRollerMotor.restoreFactoryDefaults();
 
     VictorSPXConfiguration pivotMotorConfig = new VictorSPXConfiguration();
     // pivotMotorConfig
 
     m_upperRollerMotor.restoreFactoryDefaults();
-    m_lowerRollerMotor.restoreFactoryDefaults();
+    // m_lowerRollerMotor.restoreFactoryDefaults();
 
     m_pivotEncoder = new Encoder(
       IntakeConstants.kPivotEncoderChannelA,
@@ -52,6 +54,8 @@ public class IntakeSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     Logger.recordOutput("Intake Angle", m_pivotEncoder.get());
+    Logger.recordOutput("Upper Roller Speed", m_upperRollerMotor.get());
+    // Logger.recordOutput("Lower Roller Speed", m_lowerRollerMotor.get());
   }
 
   public void setAngleSetpoint(double setpoint) {
@@ -63,7 +67,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void setRollerSpeed(double speed) {
-    m_upperRollerMotor.set(speed);
-    m_lowerRollerMotor.set(speed);
+    m_upperRollerMotor.set(-speed);
+    // m_lowerRollerMotor.set(-speed);
   }
 }

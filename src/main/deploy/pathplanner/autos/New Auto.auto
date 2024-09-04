@@ -2,25 +2,25 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 2.0,
-      "y": 7.0
+      "x": 0.955958603646531,
+      "y": 3.9194761096289117
     },
-    "rotation": 0
+    "rotation": -56.976132444203365
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Path 1"
+            "name": "AutoShoot"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Path 2"
+            "pathName": "New Path"
           }
         }
       ]
